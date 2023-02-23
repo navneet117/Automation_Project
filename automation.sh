@@ -32,4 +32,27 @@ chmod  +x  /root/Automation_Project/automation.sh
 sudo  su
 ./root/Automation_Project/automation.sh
 
+if [ ! -f /var/www/html/inventory.html ]; then
+  
+    echo "Log Type         Time Created         Type        Size" > /var/www/html/inventory.html
+fi
 
+echo "httpd-logs        $timestamp         tar        $size" >> /var/www/html/inventory.html
+
+
+
+GIT_REPO_NAME="Automation_Project"
+AUTOMATION_SCRIPT_PATH="/root/navneet117/Automation_Project/automation.sh"
+CRON_JOB_NAME="automation"
+CRON_JOB_SCHEDULE="0 0 * * *"
+CRON_JOB_FILE="/etc/cron.d/${CRON_JOB_NAME}"
+
+# Check if the cron job file already exists
+if [[ -f "${CRON_JOB_FILE}" ]]; then
+  echo "Cron job file already exists: ${CRON_JOB_FILE}"
+  exit 0
+fi
+
+# Create the cron job file
+echo "${CRON_JOB_SCHEDULE} root ${AUTOMATION_SCRIPT_PATH}" > "${CRON_JOB_FILE}"
+echo "Cron job created: ${CRON_JOB_FILE}"
