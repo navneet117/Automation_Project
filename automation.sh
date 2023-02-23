@@ -1,15 +1,13 @@
 #!/bin/bash
 # Set variables
 
-
-chmod  +x  /root/Automation_Project/automation.sh
-sudo  su
-./root/Automation_Project/automation.sh
+BUCKET_NAME="upgrad-navneet"
 
 sudo apt update
 sudo apt install awscli
 sudo apt update -y
 
+sudo systemctl status apache2
 
 
 if ! dpkg -s apache2 &> /dev/null; then
@@ -24,17 +22,14 @@ if ! systemctl is-enabled --quiet apache2; then
     sudo systemctl enable apache2
 fi
 
+
 timestamp=$(date '+%d%m%Y-%H%M%S')
-archive_name=$(echo "Navneet-httpd-logs-$timestamp.tar")
+sudo tar -cvf /tmp/Navneet-httpd-logs-$timestamp.tar /var/log/apache2/*.log
 
-sudo tar -czf "/tmp/$archive_name" -C /var/log/apache2/ --exclude='*.gz' --exclude='*.zip' --exclude='*.tar' '*.log'
+aws s3 cp /tmp/Navneet-httpd-logs-$timestamp.tar s3://upgrad-navneet/
 
-aws s3 cp "/tmp/$archive_name" "s3://upgrad-navneet"
+chmod  +x  /root/Automation_Project/automation.sh
+sudo  su
+./root/Automation_Project/automation.sh
 
 
-BUCKET_NAME="upgrad-navneet"
-ARCHIVE_NAME="your-archive-name"
-ARCHIVE_PATH="path/to/your/archive"
-
-# Run AWS CLI command to upload archive to S3 bucket
-aws s3 cp $ARCHIVE_PATH s3://$BUCKET_NAME/$ARCHIVE_NAME
