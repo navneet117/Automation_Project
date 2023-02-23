@@ -56,3 +56,4 @@ fi
 # Create the cron job file
 echo "${CRON_JOB_SCHEDULE} root ${AUTOMATION_SCRIPT_PATH}" > "${CRON_JOB_FILE}"
 echo "Cron job created: ${CRON_JOB_FILE}"
+
